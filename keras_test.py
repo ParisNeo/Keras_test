@@ -1,3 +1,10 @@
+# File : keras_test.py
+# Author : Saifeddine ALOUI
+# Description :
+#   Trains a splitted model to compute the sum of 4 entries
+#   Shows the power of neural nets. Even though the network was trained on few samples
+# It is capable of extrapolating
+
 from keras.models import Sequential
 from keras.layers import Dense
 from keras.layers import Input
@@ -11,7 +18,7 @@ from keras.utils import plot_model
 import numpy as np
 
 do_train = True
-do_load = False
+do_load = True
 def create_Model(n_entries):
 
     input_layer = Input(shape=(2*n_entries,), name="Input")
@@ -34,10 +41,28 @@ def create_Model(n_entries):
 model = create_Model(2)
 plot_model(model, to_file='model.png')
 
-X = np.array([[1,2,3,4],
-              [4,3,2,1]])
-Y = np.array([[0],
-              [1]])
+X = np.array([[1, 2, 3, 4],
+              [4, 3, 2, 1],
+              [0, 0, 0, 0],
+              [1, 0, 0, 0],
+              [0, 1, 0, 0],
+              [0, 0, 1, 0],
+              [0, 0, 0, 1],
+              [0, 0, 1, 1],
+              [0, 1, 0, 1],
+              [1, 0, 0, 1],
+              [1, 1, 0, 1]])
+Y = np.array([[10],
+              [10],
+              [0],
+              [1],
+              [1],
+              [1],
+              [1],
+              [2],
+              [2],
+              [2],
+              [3]])
 
 if(do_load and isfile("model_weights.h5")):
     model.load_weights("model_weights.h5")
@@ -52,6 +77,8 @@ model.fit(X, Y, epochs=1000, callbacks=[model_check_point, early_stopping])
 Y_ = model.predict(np.array([   [4,3,2,1],
                                 [1,2,3,4],
                                 [1,3,2,4],
-                                [4,3,1,2],
+                                [1,1,1,1],
+                                [10,10,10,10],
+                                [25,25,25,25],
 ]))
-print(Y_)
+print(np.round(Y_))
